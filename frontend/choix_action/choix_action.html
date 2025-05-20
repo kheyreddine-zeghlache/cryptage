@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRYPTEXIS - Tableau de bord</title>
+    <link rel="stylesheet" href="choix_action.css">
+</head>
+<body>
+    <header>
+        <img src="/image/cryptexis.JPG" alt="Logo Cryptexis">
+    </header>
+
+    <div class="dashboard-container">
+        <h1>Bonjour [Username], que voulez-vous faire ?</h1>
+        <p class="welcome-message"></p>
+
+        <div class="actions-container">
+            <div class="action-card" id="crypter-btn">Crypter</div>
+        </div>
+        <div class="actions-container2">
+            <div class="action-card2" id="decrypter-btn">Décrypter</div>
+        </div>
+    </div>
+
+    <script>
+    const crypterBtn = document.getElementById("crypter-btn");
+    const decrypterBtn = document.getElementById("decrypter-btn");
+
+    crypterBtn.addEventListener("click", function () {
+        window.location.href = "../cryptage/cryptage.html";
+    });
+
+    decrypterBtn.addEventListener("click", function () {
+        window.location.href = "../cryptage2/cryptage2.html";
+    });
+</script>
+</body>
+</html>

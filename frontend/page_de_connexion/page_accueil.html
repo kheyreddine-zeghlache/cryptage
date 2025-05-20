@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRYPTEXIS - Connexion</title>
+    <link rel="stylesheet" href="/frontend/page_de_connexion/page_accueil.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="/image/cryptexis.JPG" alt="Logo Cryptexis">
+        </header>
+        <p class="subtitle">Bienvenue sur ShieldCrypt<br>Sécurisez vos fichiers en toute simplicité.</p>
+
+        <form id="login-form" action="#" class="login-form">
+            <div class="form-group">
+                <label for="email">Adresse email</label>
+                <input type="email" id="email" placeholder="Mail" required>
+            </div>
+
+            <div class="form-group password-field">
+                <label for="password">Mot de passe</label>
+                <input type="password" id="password" placeholder="Mot de passe" required>
+                <span class="password-toggle">Afficher</span>
+            </div>
+
+            <div class="submit-container">
+                <span class="forgot-password">Vous n'avez pas vos identifiants ?</span>
+                <button type="submit" class="submit-btn">Se connecter</button>
+            </div>
+        </form>
+    </div>
+
+<script>
+document.querySelector("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const response = await fetch("/login", {
+        method: "POST",
+        body: JSON.stringify(Object.fromEntries(formData)),
+        headers: { "Content-Type": "application/json" }
+    });
+
+    const result = await response.json();
+    if (result.success) {
+        window.location.href = "/frontend/choix_action/choix_action.html";
+    } else {
+        alert(result.message);
+    }
+});
+</script>
+
+    <script src="/frontend/page_de_connexion/page_accueil.js"></script>
+
+</body>
+</html>

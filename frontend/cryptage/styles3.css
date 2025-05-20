@@ -1,0 +1,85 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+}
+
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #f4f4f4;
+    color: rgb(0, 0, 0);
+}
+
+
+.logo {
+    display: flex;
+    align-items: center;
+    padding-left: 400px;
+}
+
+
+.logo img {
+    width: 50px;
+    height: auto;
+    margin-right: 10px;
+}
+
+
+.help {
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+}
+
+
+.container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+}
+
+
+.section {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 40%;
+}
+
+
+textarea {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+
+button {
+    padding: 10px;
+    margin: 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+}
+
+
+.crypt-btn {
+    background-color: #ccc;
+    color: black;
+}
+
+
+.copy-btn {
+    background-color: #ccc;
+    color: black;
+}
+
+
+.send-btn {
+    background-color: #007bff;
+    color: white;
+}

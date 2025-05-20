@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRYPTEXIS</title>
+    <link rel="stylesheet" href="styles3.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="/image/cryptexis.JPG" alt="Logo Cryptexis">
+            <h1>Cryptage</h1>
+        </div>
+       
+        <a href="#" class="help">Besoin d'aide ?</a>
+    </header>
+    <main>
+        <div class="container">
+            <div class="section">
+                <h2>Données à crypter</h2>
+                <textarea id="inputText" placeholder="Entrez votre texte ici"></textarea>
+                <button class="crypt-btn" onclick="encryptText()">Crypter</button>
+            </div>
+            <div class="section">
+                <h2>Données cryptées</h2>
+                <textarea id="encryptedText" readonly></textarea>
+                <button class="copy-btn" onclick="copyText()">Copier</button>
+                <button class="send-btn" onclick="sendText()">Envoyer</button>
+            </div>
+        </div>
+    </main>
+    <script src="cryptage.js"></script>
+</body>
+</html>

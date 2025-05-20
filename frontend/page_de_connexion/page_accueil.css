@@ -1,0 +1,139 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+
+body {
+    background-color: #f5f7fa;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+   
+}
+
+
+.container {
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+
+
+    header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+
+header img {
+    max-width: 150px;
+    height: auto;
+}
+
+
+}
+
+
+.subtitle {
+    color: #000000;
+    margin-bottom: 30px;
+    font-size: 25px;
+    line-height: 1.5;
+    font-family: 'Segoe UI', Arial, sans-serif;
+   
+    font-weight: bold;
+
+
+}
+
+
+.login-form {
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #050505;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+
+input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+
+input:focus {
+    outline: none;
+    border-color: #3498db;
+}
+
+
+.password-field {
+    position: relative;
+}
+
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #7f8c8d;
+    font-size: 14px;
+}
+.submit-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+
+.forgot-password {
+    color: #000000;
+    font-size: 14px;
+}
+
+
+.submit-btn {
+    background-color: #121fd6;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+
+.submit-btn:hover {
+    background-color: #2980b9;
+}
+
+
