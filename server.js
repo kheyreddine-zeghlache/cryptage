@@ -1,29 +1,134 @@
+/*************************************************************************
+*   Chargement des modules nécessaires au fonctionnement du serveur      *
+*                et Configuration du serveur express                     *
+**************************************************************************/
+
+// Chargement des modules nécessaires
 const express = require('express');
 const path = require('path');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
+// Configuration du serveur express
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Middleware pour parser les données JSON
+// Configuration des middleware
+app.use(express.static(__dirname)); // Servir les fichiers statiques depuis le répertoire racine
+app.use(bodyParser.json());
 app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Servir les fichiers statiques (HTML, CSS, JS, images)
-app.use(express.static(path.join(__dirname, 'frontend')));
-app.use('/image', express.static(path.join(__dirname, 'image')));
+// Route principale vers la page de connexion
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend/page_de_connexion/page_accueil.html'));
+});
 
-// Simulation simple d’une route de login (facultatif)
-app.post('/login', (req, res) => {
+/*********************************************************************
+*              Connexion à la base de données MongoDB                *
+**********************************************************************/
+
+// URL de connexion MongoDB (à remplacer par votre URL réelle)
+const MONGO_URI = 'mongodb+srv://shieldcrypt:4gBn9ZMoRj3opvDx@cluster0.l4siktg.mongodb.net/ShieldCrypt';
+
+mongoose.connect(MONGO_URI)
+    .then(() => {
+        console.log('Connexion réussie à MongoDB');
+    })
+    .catch(err => {
+        console.error('Erreur de connexion à MongoDB :', err);
+    });
+
+// Vérification de la connexion à la base de données
+mongoose.connection.on('connected', () => {
+    console.log("Mongoose est connecté.");
+});
+mongoose.connection.on('error', (err) => {
+    console.error("Erreur dans la connexion Mongoose :", err);
+});
+
+/*********************************************************************
+*              Création du modèle pour les utilisateurs              *
+**********************************************************************/
+
+// Schéma pour la collection d'utilisateurs
+const userSchema = new mongoose.Schema({
+    name: String,
+    email: String,
+    password: String,
+    class: String
+});
+
+// Création du modèle User basé sur ce schéma
+const User = mongoose.model('User', userSchema, 'Users');
+
+/*********************************************************************
+*                   Route pour l'authentification                    *
+**********************************************************************/
+
+app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
-    // Exemple simple : accepte n'importe quoi
-    if (email && password) {
-        res.json({ success: true, redirect: 'frontend/page_de_connexion/page_accueil.html' });
-    } else {
-        res.json({ success: false, message: "Identifiants incorrects" });
+    console.log("Tentative de connexion avec :", email);
+
+    if (!email || !password) {
+        return res.json({ success: false, message: "Veuillez remplir tous les champs." });
+    }
+
+    try {
+        // Rechercher l'utilisateur dans la base de données
+        const user = await User.findOne({ email });
+        
+        if (!user) {
+            return res.json({ success: false, message: "Email ou mot de passe incorrect." });
+        }
+
+        // Vérifier le mot de passe (en texte brut pour l'instant)
+        if (user.password !== password) {
+            return res.json({ success: false, message: "Email ou mot de passe incorrect." });
+        }
+
+        console.log("Connexion réussie pour :", email);
+        
+        // Stocker le prénom de l'utilisateur dans localStorage se fait côté client
+        return res.json({ 
+            success: true, 
+            firstName: user.name.split(' ')[0] // Extrait le prénom du nom complet
+        });
+        
+    } catch (error) {
+        console.error("Erreur lors de la connexion :", error);
+        return res.json({ success: false, message: "Erreur interne du serveur." });
     }
 });
 
-// Lancer le serveur
+/*********************************************************************
+*                   Route pour les pages protégées                   *
+**********************************************************************/
+
+// Route vers la page action après connexion réussie
+app.get('/frontend/choix_action/choix_action.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'frontend/choix_action/choix_action.html'));
+});
+
+// Servir toutes les ressources statiques (CSS, JS, images, etc.)
+app.get('*', (req, res) => {
+    const requestPath = req.path;
+    const filePath = path.join(__dirname, requestPath);
+    
+    res.sendFile(filePath, (err) => {
+        if (err) {
+            console.error("Erreur lors de l'envoi du fichier :", err);
+            res.status(404).send('Page non trouvée');
+        }
+    });
+});
+
+/*********************************************************************
+*                   Démarrage du serveur                             *
+**********************************************************************/
+
 app.listen(PORT, () => {
-    console.log(`✅ Serveur démarré sur http://localhost:${PORT}`);
+    console.log(`Le serveur Cryptexis est en écoute sur le port ${PORT}`);
+    console.log(`Accédez à l'application : http://localhost:${PORT}`);
 });

@@ -1,16 +1,14 @@
 {
-  "name": "cryptage",
+  "name": "cryptexis-site",
   "version": "1.0.0",
-  "description": "",
+  "description": "ShieldCrypt - Site web de cryptage de fichiers",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2",
+    "mongoose": "^7.6.3"
   }
 }

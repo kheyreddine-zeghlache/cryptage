@@ -12,7 +12,7 @@
     </header>
 
     <div class="dashboard-container">
-        <h1>Bonjour [Username], que voulez-vous faire ?</h1>
+        <h1 id="welcome-title">Bonjour, que voulez-vous faire ?</h1>
         <p class="welcome-message"></p>
 
         <div class="actions-container">
@@ -21,19 +21,33 @@
         <div class="actions-container2">
             <div class="action-card2" id="decrypter-btn">Décrypter</div>
         </div>
+
+        <div class="logout-container">
+            <button id="logout-btn">Déconnexion</button>
+        </div>
     </div>
 
     <script>
-    const crypterBtn = document.getElementById("crypter-btn");
-    const decrypterBtn = document.getElementById("decrypter-btn");
+    const firstName = localStorage.getItem("firstName");
+    if (firstName) {
+        document.getElementById("welcome-title").textContent = `Bonjour ${firstName}, que voulez-vous faire ?`;
+    } else {
+        // Redirection si non connecté
+        window.location.href = "/"; // Retour à la page d'accueil
+    }
 
-    crypterBtn.addEventListener("click", function () {
+    document.getElementById("crypter-btn").addEventListener("click", function () {
         window.location.href = "../cryptage/cryptage.html";
     });
 
-    decrypterBtn.addEventListener("click", function () {
+    document.getElementById("decrypter-btn").addEventListener("click", function () {
         window.location.href = "../cryptage2/cryptage2.html";
     });
-</script>
+
+    document.getElementById("logout-btn").addEventListener("click", function () {
+        localStorage.removeItem("firstName");
+        window.location.href = "/";
+    });
+    </script>
 </body>
 </html>
