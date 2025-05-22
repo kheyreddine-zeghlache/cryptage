@@ -93,9 +93,10 @@ app.post('/login', async (req, res) => {
         // Stocker le prénom de l'utilisateur dans localStorage se fait côté client
         return res.json({ 
             success: true, 
-            firstName: user.name.split(' ')[0] // Extrait le prénom du nom complet
+            firstName: user.name.split(' ')[0], // Extrait le prénom du nom complet
+            userClass: user.class // Change le nom de la propriété "class"
         });
-        
+
     } catch (error) {
         console.error("Erreur lors de la connexion :", error);
         return res.json({ success: false, message: "Erreur interne du serveur." });
@@ -111,11 +112,22 @@ app.get('/frontend/choix_action/choix_action.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'frontend/choix_action/choix_action.html'));
 });
 
-// Servir toutes les ressources statiques (CSS, JS, images, etc.)
+// ROUTE API – doit être au-dessus du catch-all
+app.get("/api/users", async (req, res) => {
+    try {
+        const users = await User.find({});
+        res.json({ success: true, users });
+    } catch (error) {
+        console.error("Erreur lors de la récupération des utilisateurs :", error);
+        res.json({ success: false, message: "Erreur interne du serveur." });
+    }
+});
+
+// Cette route doit venir APRÈS toutes les autres
 app.get('*', (req, res) => {
     const requestPath = req.path;
     const filePath = path.join(__dirname, requestPath);
-    
+
     res.sendFile(filePath, (err) => {
         if (err) {
             console.error("Erreur lors de l'envoi du fichier :", err);
@@ -123,6 +135,34 @@ app.get('*', (req, res) => {
         }
     });
 });
+
+app.post("/add-user", async (req, res) => {
+    const { name, email, password, class: userClass } = req.body;
+
+    if (!name || !email || !password || !userClass) {
+        return res.json({ success: false, message: "Tous les champs sont requis." });
+    }
+
+    try {
+        // Vérifie si l'utilisateur existe déjà
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.json({ success: false, message: "Un utilisateur avec cet email existe déjà." });
+        }
+
+        const newUser = new User({ name, email, password, class: userClass });
+        await newUser.save();
+
+        res.json({ success: true, message: "Utilisateur ajouté avec succès." });
+    } catch (error) {
+        console.error("Erreur lors de l'ajout de l'utilisateur :", error);
+        res.status(500).json({ success: false, message: "Erreur interne du serveur." });
+    }
+});
+
+
+
+
 
 /*********************************************************************
 *                   Démarrage du serveur                             *

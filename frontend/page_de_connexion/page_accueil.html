@@ -51,12 +51,23 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
     const result = await response.json();
 
     if (result.success) {
-        localStorage.setItem("firstName", result.firstName); // Stocke le prénom
-        window.location.href = "/frontend/choix_action/choix_action.html";
+        localStorage.setItem("firstName", result.firstName);
+        localStorage.setItem("userClass", result.userClass); // Correction ici
+
+        // ✅ Correction de la redirection
+        console.log("Classe retournée :", result.userClass); // Affichage pour debug
+        console.log("Classe stockée :", localStorage.getItem("userClass")); // Vérification de stockage
+
+        if (result.userClass.trim().toLowerCase() === "admin") {
+            window.location.href = "/frontend/admin/admin.html";
+        } else {
+            window.location.href = "/frontend/choix_action/choix_action.html";
+        }
     } else {
         alert(result.message);
     }
 });
+
 </script>
 
 

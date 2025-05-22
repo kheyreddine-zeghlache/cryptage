@@ -3,58 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Ajouter un utilisateur</title>
-    <link rel="stylesheet" href="admin.css">
+    <title>CRYPTEXIS - Administration</title>
+    <link rel="stylesheet" href="/frontend/admin/admin.css">
 </head>
 <body>
     <header>
-        <h1>Admin - Ajouter un utilisateur</h1>
+        <div class="header-content">
+            <img src="/image/cryptexis.JPG" alt="Logo Cryptexis" class="logo">
+            <h1>Administration ShieldCrypt</h1>
+            <div class="admin-info">
+                <span id="admin-name">Administrateur</span>
+                <button onclick="logout()" class="logout-btn">Déconnexion</button>
+            </div>
+        </div>
     </header>
-    <main>
-        <form id="add-user-form">
-            <input type="text" id="name" placeholder="Nom complet" required>
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Mot de passe" required>
-            <input type="text" id="class" placeholder="Classe" required>
-            <button type="submit">Ajouter</button>
-        </form>
-        <p id="message"></p>
+
+    <main class="main-content">
+        <div class="admin-panel">
+            <div class="section">
+                <h2>Ajouter un nouvel utilisateur</h2>
+                <form id="add-user-form" class="user-form">
+                    <div class="form-group">
+                        <label for="name">Nom complet</label>
+                        <input type="text" id="name" placeholder="Ex: Jean Dupont" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Adresse email</label>
+                        <input type="email" id="email" placeholder="Ex: jean.dupont@cryptexis.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" id="password" placeholder="Mot de passe sécurisé" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="class">Classe/Rôle</label>
+                        <select id="class" required>
+                            <option value="">Sélectionner une classe</option>
+                            <option value="A">Classe A</option>
+                            <option value="B">Classe B</option>
+                            <option value="C">Classe C</option>
+                            <option value="admin">Administrateur</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="add-btn">Ajouter l'utilisateur</button>
+                </form>
+                
+                <div id="message" class="message"></div>
+            </div>
+
+            <div class="section">
+                <h2>Utilisateurs existants</h2>
+                <button onclick="loadUsers()" class="refresh-btn">Actualiser la liste</button>
+                <div id="users-list" class="users-list">
+                    <p>Cliquez sur "Actualiser la liste" pour voir tous les utilisateurs</p>
+                </div>
+            </div>
+        </div>
     </main>
 
     <script>
-document.getElementById("login-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
+        // Vérifier si l'utilisateur est bien admin au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminName = localStorage.getItem('firstName');
+            if (adminName) {
+                document.getElementById('admin-name').textContent = `Bonjour, ${adminName}`;
+            }
+        });
 
-    const formData = {
-        email: document.getElementById("email").value,
-        password: document.getElementById("password").value
-    };
+        // Gestionnaire du formulaire d'ajout d'utilisateur
+        document.getElementById("add-user-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-    const response = await fetch("/login", {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: { "Content-Type": "application/json" }
-    });
+            const user = {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                password: document.getElementById("password").value,
+                class: document.getElementById("class").value
+            };
 
-    const result = await response.json();
+            console.log("Ajout d'utilisateur:", user);
 
-    if (result.success) {
-        // Stocker nom et email pour plus tard
-        localStorage.setItem("name", result.firstName);
-        localStorage.setItem("email", formData.email);
+            try {
+                const response = await fetch("/add-user", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(user)
+                });
 
-        // Vérifier si c’est l’admin
-        if (formData.email === "jules@cryptexis.com") {
-            window.location.href = "/frontend/admin/admin.html";
-        } else {
-            window.location.href = result.redirect || "/frontend/choix_action/choix_action.html";
+                const result = await response.json();
+                const messageElem = document.getElementById("message");
+
+                if (result.success) {
+                    messageElem.textContent = "✅ Utilisateur ajouté avec succès !";
+                    messageElem.className = "message success";
+                    
+                    // Réinitialiser le formulaire
+                    document.getElementById("add-user-form").reset();
+                    
+                    // Actualiser la liste des utilisateurs
+                    loadUsers();
+                } else {
+                    messageElem.textContent = "❌ Erreur : " + result.message;
+                    messageElem.className = "message error";
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
+                const messageElem = document.getElementById("message");
+                messageElem.textContent = "❌ Erreur de connexion au serveur.";
+                messageElem.className = "message error";
+            }
+        });
+
+        // Fonction pour charger la liste des utilisateurs
+        async function loadUsers() {
+            try {
+                const response = await fetch("/api/users");
+                const result = await response.json();
+                
+                const usersList = document.getElementById("users-list");
+                
+                if (result.success) {
+                    if (result.users.length === 0) {
+                        usersList.innerHTML = "<p>Aucun utilisateur trouvé.</p>";
+                    } else {
+                        let html = "<div class='users-table'>";
+                        html += "<div class='user-header'><span>Nom</span><span>Email</span><span>Classe</span></div>";
+                        
+                        result.users.forEach(user => {
+                            html += `<div class='user-row'>
+                                <span>${user.name}</span>
+                                <span>${user.email}</span>
+                                <span class='class-badge class-${user.class.toLowerCase()}'>${user.class}</span>
+                            </div>`;
+                        });
+                        
+                        html += "</div>";
+                        usersList.innerHTML = html;
+                    }
+                } else {
+                    usersList.innerHTML = "<p class='error'>Erreur lors du chargement des utilisateurs.</p>";
+                }
+            } catch (error) {
+                console.error("Erreur:", error);
+                document.getElementById("users-list").innerHTML = "<p class='error'>Erreur de connexion au serveur.</p>";
+            }
         }
-    } else {
-        alert(result.message);
+
+        // Fonction de déconnexion
+        function logout() {
+            localStorage.clear();
+            window.location.href = "/";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+    const userClass = localStorage.getItem("userClass");
+    const firstName = localStorage.getItem("firstName");
+
+    if (userClass !== "admin") {
+        alert("Accès refusé : administrateur uniquement.");
+        window.location.href = "/";
+    }
+
+    if (firstName) {
+        document.getElementById("admin-name").textContent = `Bonjour, ${firstName}`;
     }
 });
-</script>
 
-    <script src="admin.js"></script>
+    </script>
+
+    <script src="/frontend/admin/admin.js"></script>
 </body>
 </html>
