@@ -1,32 +1,44 @@
-function decryptText() {
+async function decryptText() {
     let input = document.getElementById("inputText").value;
-    let decrypted = atob(input); // Simple décodage en Base64
-    document.getElementById("encryptedText").value = decrypted;
+    if (!input.trim()) {
+        alert("Veuillez entrer un texte à décrypter");
+        return;
+    }
+
+    try {
+        // Séparer la clé et le texte chiffré (format: "CLÉ|TEXTE_CHIFFRÉ")
+        const [key, encryptedText] = input.split('|');
+       
+        if (!key || !encryptedText) {
+            throw new Error("Format invalide. Le texte doit être au format 'CLÉ|TEXTE_CHIFFRÉ'");
+        }
+
+        const response = await fetch('/api/decrypt', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                encrypted: encryptedText,
+                key: key
+            })
+        });
+       
+        if (!response.ok) {
+            throw new Error('Erreur réseau');
+        }
+       
+        const result = await response.json();
+       
+        if (result.error) {
+            throw new Error(result.error);
+        }
+       
+        document.getElementById("encryptedText").value = result.decrypted;
+    } catch (error) {
+        console.error("Erreur de déchiffrement:", error);
+        alert("Erreur lors du déchiffrement: " + error.message);
+    }
 }
 
-
-function copyText() {
-    let decryptedText = document.getElementById("encryptedText");
-    decryptedText.select();
-    document.execCommand("copy");
-}
-
-
-function pasteText() {
-    navigator.clipboard.readText().then(text => {
-        document.getElementById("inputText").value = text;
-    });
-}
-
-
-function importText() {
-    // Logique pour importer du texte depuis un fichier
-    alert("Fonctionnalité d'importation à implémenter");
-}
-
-
-function exportText() {
-    let decrypted = document.getElementById("encryptedText").value;
-    // Logique pour exporter du texte vers un fichier
-    alert("Fonctionnalité d'exportation à implémenter");
-}
+// Les autres fonctions restent inchangées

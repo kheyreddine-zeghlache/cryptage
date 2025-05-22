@@ -123,6 +123,48 @@ app.get("/api/users", async (req, res) => {
     }
 });
 
+
+// Nouvelle route pour le chiffrement AES
+app.post('/api/crypt', (req, res) => {
+    const { text } = req.body;
+   
+    const { spawn } = require('child_process');
+    const pythonProcess = spawn('python', ['./backend/crypto/aes_encrypt.py', text]);
+
+    let result = '';
+    pythonProcess.stdout.on('data', (data) => {
+        result += data.toString();
+    });
+
+    pythonProcess.on('close', (code) => {
+        if (code !== 0) {
+            return res.status(500).json({ error: "Erreur lors du chiffrement" });
+        }
+        res.json(JSON.parse(result));
+    });
+});
+
+// Nouvelle route pour le déchiffrement AES
+app.post('/api/decrypt', (req, res) => {
+    const { encrypted, key } = req.body;
+   
+    const { spawn } = require('child_process');
+    const pythonProcess = spawn('python', ['./backend/crypto/aes_decrypt.py', encrypted, key]);
+
+    let result = '';
+    pythonProcess.stdout.on('data', (data) => {
+        result += data.toString();
+    });
+
+    pythonProcess.on('close', (code) => {
+        if (code !== 0) {
+            return res.status(500).json({ error: "Erreur lors du déchiffrement" });
+        }
+        res.json(JSON.parse(result));
+    });
+});
+
+
 // Cette route doit venir APRÈS toutes les autres
 app.get('*', (req, res) => {
     const requestPath = req.path;
