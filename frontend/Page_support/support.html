@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Support - CRYPTEXIS</title>
+    <link rel="stylesheet" href="styles_support.css">
+</head>
+<body>
+    <header class="header">
+        <header>
+            <img src="/image/cryptexis.JPG" alt="Logo">
+        </header>
+        <h1 class="page-title">Contact Support</h1>
+    </header>
+
+    <div class="container">
+        <div class="form-container">
+            <div id="successMessage" class="success-message">
+                Votre message a été envoyé avec succès ! Notre équipe vous répondra dans les plus brefs délais.
+            </div>
+            
+            <div id="errorMessage" class="error-message">
+                Une erreur s'est produite. Veuillez vérifier vos informations et réessayer.
+            </div>
+
+            <form id="supportForm">
+                <div class="form-group">
+                    <label for="email" class="form-label">Mail</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        class="form-input" 
+                        required
+                        placeholder="votre.email@exemple.com"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea 
+                        id="description" 
+                        name="description" 
+                        class="form-textarea" 
+                        required
+                        placeholder="Décrivez votre problème ou votre question en détail..."
+                    ></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Envoyer</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="support.js"></script>
+</body>
+</html>

@@ -25,4 +25,15 @@ document.getElementById("login-form").addEventListener("submit", async function(
     } else {
         alert(result.message);
     }
+    {
+      // Construction du lien mailto
+    const email = "jules@cryptexis.com"; // <- tu peux mettre une adresse par défaut ici si tu veux
+    const subject = encodeURIComponent("Texte crypté - CRYPTEXIS");
+    const body = encodeURIComponent("");
+
+    const mailtoLink = `https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`;
+
+    // Ouvrir Gmail avec le contenu crypté
+    window.open(mailtoLink, '_blank');
+    }
 });
