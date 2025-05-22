@@ -46,6 +46,12 @@ mongoose.connection.on('connected', () => {
 mongoose.connection.on('error', (err) => {
     console.error("Erreur dans la connexion Mongoose :", err);
 });
+const nodemailer = require("nodemailer");
+
+/*********************************************************************
+*              configuration pour l'envoi d'email              *
+**********************************************************************/
+
 
 /*********************************************************************
 *              Création du modèle pour les utilisateurs              *
@@ -163,6 +169,7 @@ app.post('/api/decrypt', (req, res) => {
         res.json(JSON.parse(result));
     });
 });
+
 
 
 // Cette route doit venir APRÈS toutes les autres
