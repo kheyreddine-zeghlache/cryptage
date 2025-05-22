@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Ajouter un utilisateur</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <header>
+        <h1>Admin - Ajouter un utilisateur</h1>
+    </header>
+    <main>
+        <form id="add-user-form">
+            <input type="text" id="name" placeholder="Nom complet" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Mot de passe" required>
+            <input type="text" id="class" placeholder="Classe" required>
+            <button type="submit">Ajouter</button>
+        </form>
+        <p id="message"></p>
+    </main>
+
+    <script>
+document.getElementById("login-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const formData = {
+        email: document.getElementById("email").value,
+        password: document.getElementById("password").value
+    };
+
+    const response = await fetch("/login", {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: { "Content-Type": "application/json" }
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+        // Stocker nom et email pour plus tard
+        localStorage.setItem("name", result.firstName);
+        localStorage.setItem("email", formData.email);
+
+        // Vérifier si c’est l’admin
+        if (formData.email === "jules@cryptexis.com") {
+            window.location.href = "/frontend/admin/admin.html";
+        } else {
+            window.location.href = result.redirect || "/frontend/choix_action/choix_action.html";
+        }
+    } else {
+        alert(result.message);
+    }
+});
+</script>
+
+    <script src="admin.js"></script>
+</body>
+</html>
